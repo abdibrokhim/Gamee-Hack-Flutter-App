@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class GameResponseTextField extends StatelessWidget {
+class GameResponseTextField extends StatefulWidget {
   final String message;
   final String buttonText;
   final VoidCallback onPressed;
@@ -12,7 +12,26 @@ class GameResponseTextField extends StatelessWidget {
     required this.onPressed,
   }) : super(key: key);
 
-  Future<void> _dialogBuilder(BuildContext context) {
+  @override
+  _GameResponseTextFieldState createState() => _GameResponseTextFieldState();
+}
+
+class _GameResponseTextFieldState extends State<GameResponseTextField> {
+  late String message;
+  late String buttonText;
+  late VoidCallback onPressed;
+
+  @override
+  void initState() {
+    super.initState();
+    message = widget.message;
+    buttonText = widget.buttonText;
+    onPressed = widget.onPressed;
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _dialogBuilder(context));
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -42,11 +61,6 @@ class GameResponseTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _dialogBuilder(context);
-      },
-      child: Container(),
-    );
+    return Container();
   }
 }

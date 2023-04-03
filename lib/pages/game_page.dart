@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:gamee_hacker_app/ad_helper.dart';
+import 'package:gamee_hacker_app/components/game_response_textfield.dart';
 import 'package:gamee_hacker_app/components/game_submit_button.dart';
 import 'package:gamee_hacker_app/components/game_textfield.dart';
-import 'package:gamee_hacker_app/components/game_response_textfield.dart';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:gamee_hacker_app/ad_helper.dart';
+import 'package:http/http.dart' as http;
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -127,7 +126,8 @@ class _GamePageState extends State<GamePage> {
       _isLoading = true;
     });
 
-    final url = Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/");
+    final url =
+        Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/");
     final body = {
       "api_key": "OAyg2PFssTRePEQ6qZh5PQ",
       "url": _urlController.text,
