@@ -164,6 +164,27 @@ class _GamePageState extends State<GamePage> {
           _loadRewardedAd();
         }
       });
+      dialogBuilder(
+        context: context,
+        message: _responseText,
+        buttonText: "Close",
+        onPressed: () {
+          setState(() {
+            _isResponseDialogVisible = false;
+            if (_interstitialAd != null) {
+              _interstitialAd?.show();
+            } else if (_rewardedAdEnabled()) {
+              _rewardedAd?.show(
+                onUserEarnedReward: (_, reward) {
+                  print('You have $reward free candy');
+                },
+              );
+            } else {
+              _moveToHome();
+            }
+          });
+        },
+      );
     }
   }
 
@@ -216,28 +237,6 @@ class _GamePageState extends State<GamePage> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    _isResponseDialogVisible
-                        ? GameResponseTextField(
-                            message: _responseText,
-                            buttonText: "Close",
-                            onPressed: () {
-                              setState(() {
-                                _isResponseDialogVisible = false;
-                                if (_interstitialAd != null) {
-                                  _interstitialAd?.show();
-                                } else if (_rewardedAdEnabled()) {
-                                  _rewardedAd?.show(
-                                    onUserEarnedReward: (_, reward) {
-                                      print('You have $reward free candy');
-                                    },
-                                  );
-                                } else {
-                                  _moveToHome();
-                                }
-                              });
-                            },
-                          )
-                        : const SizedBox.shrink(),
                     const SizedBox(height: 16),
                     if (_bannerAd != null)
                       Align(
