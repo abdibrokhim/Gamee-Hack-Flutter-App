@@ -7,7 +7,6 @@ class GameTextField extends StatelessWidget {
   final bool obscureText;
   final String? Function(String?)? validator;
 
-
   const GameTextField({
     Key? key,
     required this.controller,
@@ -24,6 +23,10 @@ class GameTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
+          suffixIcon: IconButton(
+            onPressed: controller.clear,
+            icon: const Icon(Icons.clear),
+          ),
           contentPadding: const EdgeInsets.all(20.0),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.lightBlue),

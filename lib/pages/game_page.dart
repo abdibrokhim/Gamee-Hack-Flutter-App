@@ -5,6 +5,7 @@ import 'package:gamee_hacker_app/components/game_submit_button.dart';
 import 'package:gamee_hacker_app/components/game_textfield.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -121,36 +122,52 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
+// https://prizes.gamee.com/game-bot/paintio-de7071c4197c1b0608ef62afa4508dc35d34feb0#tgShareScoreUrl=tgb%3A%2F%2Fshare_game_score%3Fhash%3DzdnLFmEPqJjemxGpnKio
+  
   Future<void> _submitScore() async {
     setState(() {
       _isLoading = true;
     });
 
-    final url =
-        Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/");
-    final body = {
-      "api_key": "OAyg2PFssTRePEQ6qZh5PQ",
-      "url": _urlController.text,
-      "score": _scoreController.text,
-    };
+    const apiUrl = "https://tggameehacker-api.ba-students.uz/api/update_score/";
+    final gameUrl = _urlController.text;
+    final gameScore = _scoreController.text;
+
+    // final url = Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore");
+    final url = Uri.parse('https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
+    
+    // final url = Uri.parse('$apiUrl?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
+
+    // final headers = <String, String>{
+    //   'Content-Type': 'application/json',
+    // };
+
+    // final payload = jsonEncode(<String, dynamic>{
+    //   'api_key': 'OAyg2PFssTRePEQ6qZh5PQ',
+    //   'url': _urlController.text,
+    //   'score': _scoreController.text,
+    // });
+
+    print(_urlController.text.runtimeType);
+    print(_scoreController.text.runtimeType);
 
     try {
-      final response = await http.post(url, body: body);
+      final response = await http.post(url);
       if (response.statusCode == 200) {
         setState(() {
-          _responseText = "Score updated successfully";
+          _responseText = response.body;
           _isResponseDialogVisible = true;
         });
       } else {
         setState(() {
-          _responseText = "Something went wrong";
+          // _responseText = "Something went wrong";
           _responseText = response.body;
           _isResponseDialogVisible = true;
         });
       }
     } catch (error) {
       setState(() {
-        _responseText = "Something went wrong";
+        // _responseText = "Something went wrong";
         _responseText = error.toString();
         _isResponseDialogVisible = true;
       });
