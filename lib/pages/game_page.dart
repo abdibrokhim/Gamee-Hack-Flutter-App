@@ -33,7 +33,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   bool _rewardedAdEnabled() {
-    return _adCounter % 2 == 0;
+    return _adCounter % 3 == 0;
   }
 
   @override
@@ -191,9 +191,9 @@ class _GamePageState extends State<GamePage> {
           setState(() {
             _isResponseDialogVisible = false;
             if (_interstitialAd != null) {
-              _interstitialAd?.show();
+                _interstitialAd?.show();
             } 
-            if (_rewardedAdEnabled()) {
+            if (_rewardedAd != null && _rewardedAdEnabled()) {
               _rewardedAd?.show(
                 onUserEarnedReward: (_, reward) {
                   print('You have $reward free candy');

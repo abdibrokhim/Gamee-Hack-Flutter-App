@@ -6,9 +6,4 @@
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application>
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-4779220143200061~8343333723"/>
-    </application>
 </manifest>
