@@ -29,7 +29,6 @@ class _GamePageState extends State<GamePage> {
   RewardedAd? _rewardedAd;
 
   void _moveToHome() {
-    // Navigator.of(context).pop();
     print('moved to home');
   }
 
@@ -122,7 +121,7 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
-// https://prizes.gamee.com/game-bot/paintio-de7071c4197c1b0608ef62afa4508dc35d34feb0#tgShareScoreUrl=tgb%3A%2F%2Fshare_game_score%3Fhash%3DzdnLFmEPqJjemxGpnKio
+  // https://prizes.gamee.com/game-bot/paintio-de7071c4197c1b0608ef62afa4508dc35d34feb0#tgShareScoreUrl=tgb%3A%2F%2Fshare_game_score%3Fhash%3DzdnLFmEPqJjemxGpnKio
   
   Future<void> _submitScore() async {
     setState(() {
@@ -130,10 +129,13 @@ class _GamePageState extends State<GamePage> {
     });
 
     const apiUrl = "https://tggameehacker-api.ba-students.uz/api/update_score/";
+    const apiKey = "OAyg2PFssTRePEQ6qZh5PQ";
+    
     final gameUrl = _urlController.text;
     final gameScore = _scoreController.text;
 
     // final url = Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore");
+    // final url = Uri.parse('$apiUrl?api_key=$apiKey&url=$gameUrl&score=$gameScore');
     final url = Uri.parse('https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
     
     // final url = Uri.parse('$apiUrl?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
@@ -155,21 +157,22 @@ class _GamePageState extends State<GamePage> {
       final response = await http.post(url);
       if (response.statusCode == 200) {
         setState(() {
-          _responseText = response.body;
-          _isResponseDialogVisible = true;
+          _responseText = "Score hacked successfully";
+          print(_responseText);
+          // _isResponseDialogVisible = true;
         });
       } else {
         setState(() {
-          // _responseText = "Something went wrong";
-          _responseText = response.body;
-          _isResponseDialogVisible = true;
+          _responseText = "Something went wrong";
+          print(_responseText);
+          // _isResponseDialogVisible = true;
         });
       }
     } catch (error) {
       setState(() {
-        // _responseText = "Something went wrong";
         _responseText = error.toString();
-        _isResponseDialogVisible = true;
+        print(_responseText);
+        // _isResponseDialogVisible = true;
       });
     } finally {
       setState(() {
@@ -184,22 +187,21 @@ class _GamePageState extends State<GamePage> {
       dialogBuilder(
         context: context,
         message: _responseText,
-        buttonText: "Close",
         onPressed: () {
           setState(() {
             _isResponseDialogVisible = false;
             if (_interstitialAd != null) {
               _interstitialAd?.show();
-            } else if (_rewardedAdEnabled()) {
+            } 
+            if (_rewardedAdEnabled()) {
               _rewardedAd?.show(
                 onUserEarnedReward: (_, reward) {
                   print('You have $reward free candy');
                 },
               );
-            } else {
-              _moveToHome();
             }
           });
+          Navigator.of(context).pop();
         },
       );
     }
