@@ -53,8 +53,8 @@ flutter_icons:
   web:
     generate: true
     image_path: "assets/app_logo.jpeg"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"
   windows:
     generate: true
     image_path: "assets/app_logo.jpeg"

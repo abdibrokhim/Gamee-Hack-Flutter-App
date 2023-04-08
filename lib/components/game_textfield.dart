@@ -19,25 +19,29 @@ class GameTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          suffixIcon: IconButton(
-            onPressed: controller.clear,
-            icon: const Icon(Icons.clear),
-          ),
-          contentPadding: const EdgeInsets.all(20.0),
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.lightBlue),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.lightBlue.shade400),
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey[500])),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.text,
+        child: TextField(
+          controller: controller,
+          obscureText: obscureText,
+          cursorColor: Colors.lightBlue,
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              onPressed: controller.clear,
+              icon: const Icon(Icons.clear),
+            ),
+            contentPadding: const EdgeInsets.all(20.0),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.lightBlue),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.lightBlue.shade400),
+            ),
+            fillColor: Colors.white,
+            filled: true,
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.grey[500])),
+        ),
       ),
     );
   }

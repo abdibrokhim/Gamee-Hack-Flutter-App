@@ -129,14 +129,14 @@ class _GamePageState extends State<GamePage> {
     });
 
     const apiUrl = "https://tggameehacker-api.ba-students.uz/api/update_score/";
-    const apiKey = "OAyg2PFssTRePEQ6qZh5PQ";
+    const apiKey = "OAyg2PFssTRePEQ6qZh5PQ"; // get your api_key -> https://tggameehacker-api.ba-students.uz/docs
     
     final gameUrl = _urlController.text;
     final gameScore = _scoreController.text;
 
     // final url = Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore");
     // final url = Uri.parse('$apiUrl?api_key=$apiKey&url=$gameUrl&score=$gameScore');
-    final url = Uri.parse('https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
+    final url = Uri.parse('$apiUrl?api_key=$apiKey&score=$gameScore&url=$gameUrl');
     
     // final url = Uri.parse('$apiUrl?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
 
@@ -150,17 +150,23 @@ class _GamePageState extends State<GamePage> {
     //   'score': _scoreController.text,
     // });
 
-    print(_urlController.text.runtimeType);
-    print(_scoreController.text.runtimeType);
+    print(_urlController.text);
+    print(_scoreController.text);
 
     try {
       final response = await http.post(url);
+
       if (response.statusCode == 200) {
-        setState(() {
-          _responseText = "Score hacked successfully";
-          print(_responseText);
-          // _isResponseDialogVisible = true;
-        });
+        if (response.body.isNotEmpty) {
+          final jsonResponse = jsonDecode(response.body);
+          print(jsonResponse);
+
+          setState(() {
+            _responseText = jsonResponse['message'];
+            print(_responseText);
+            // _isResponseDialogVisible = true;
+          });
+        }
       } else {
         setState(() {
           _responseText = "Something went wrong";
@@ -193,12 +199,15 @@ class _GamePageState extends State<GamePage> {
             if (_interstitialAd != null) {
                 _interstitialAd?.show();
             } 
-            if (_rewardedAd != null && _rewardedAdEnabled()) {
-              _rewardedAd?.show(
-                onUserEarnedReward: (_, reward) {
-                  print('You have $reward free candy');
-                },
-              );
+            if (_rewardedAd != null) {
+              if (_adCounter % 2 == 0) {
+                _adCounter = 0;
+                _rewardedAd?.show(
+                  onUserEarnedReward: (_, reward) {
+                    print('You have $reward free candy');
+                  },
+                );
+              }
             }
           });
           Navigator.of(context).pop();
@@ -226,7 +235,7 @@ class _GamePageState extends State<GamePage> {
                   children: [
                     GameTextField(
                       controller: _urlController,
-                      hintText: "Enter game url",
+                      hintText: "Enter game url here",
                       obscureText: false,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -238,7 +247,7 @@ class _GamePageState extends State<GamePage> {
                     const SizedBox(height: 16),
                     GameTextField(
                       controller: _scoreController,
-                      hintText: "Enter score",
+                      hintText: "Enter score here",
                       obscureText: false,
                       validator: (value) {
                         if (value!.isEmpty) {
