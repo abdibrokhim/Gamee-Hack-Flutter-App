@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gamee_hacker_app">
    <application
-        android:label="Telegram Gamee Hack"
+        android:label="Gamee Hack"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

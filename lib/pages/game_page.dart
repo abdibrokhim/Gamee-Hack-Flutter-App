@@ -28,22 +28,18 @@ class _GamePageState extends State<GamePage> {
   InterstitialAd? _interstitialAd;
   RewardedAd? _rewardedAd;
 
-  void _moveToHome() {
-    print('moved to home');
-  }
-
-  bool _rewardedAdEnabled() {
-    return _adCounter % 3 == 0;
-  }
 
   @override
   void initState() {
     super.initState();
 
-    // if (_rewardedAdEnabled()) {
-    //   _loadRewardedAd();
-    // }
+    //load ad here...
+    _loadInterstitialAd();
+    _loadRewardedAd();
+    _loadBannerAd();
+  }
 
+  void _loadBannerAd() {
     BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       request: const AdRequest(),
@@ -69,9 +65,7 @@ class _GamePageState extends State<GamePage> {
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              _moveToHome();
-            },
+            onAdDismissedFullScreenContent: (ad) {},
           );
 
           setState(() {
@@ -93,11 +87,11 @@ class _GamePageState extends State<GamePage> {
         onAdLoaded: (ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
-              setState(() {
-                ad.dispose();
-                _rewardedAd = null;
-              });
-              _loadRewardedAd();
+              // setState(() {
+              //   ad.dispose();
+              //   _rewardedAd = null;
+                
+              // });
             },
           );
 
@@ -112,6 +106,20 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
+  void _showInterstitialAd(){
+    _interstitialAd?.show();
+  }
+
+  void _showRewardedAd(){
+    _rewardedAd?.show(
+      onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem){
+        num amount = rewardItem.amount;
+        print('Reward amount: $amount');
+      }
+    );
+  }
+
+
   @override
   void dispose() {
     _bannerAd?.dispose();
@@ -121,7 +129,6 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
-  // https://prizes.gamee.com/game-bot/paintio-de7071c4197c1b0608ef62afa4508dc35d34feb0#tgShareScoreUrl=tgb%3A%2F%2Fshare_game_score%3Fhash%3DzdnLFmEPqJjemxGpnKio
   
   Future<void> _submitScore() async {
     setState(() {
@@ -134,22 +141,8 @@ class _GamePageState extends State<GamePage> {
     final gameUrl = _urlController.text;
     final gameScore = _scoreController.text;
 
-    // final url = Uri.parse("https://tggameehacker-api.ba-students.uz/api/update_score/?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore");
-    // final url = Uri.parse('$apiUrl?api_key=$apiKey&url=$gameUrl&score=$gameScore');
     final url = Uri.parse('$apiUrl?api_key=$apiKey&score=$gameScore&url=$gameUrl');
     
-    // final url = Uri.parse('$apiUrl?api_key=OAyg2PFssTRePEQ6qZh5PQ&url=$gameUrl&score=$gameScore');
-
-    // final headers = <String, String>{
-    //   'Content-Type': 'application/json',
-    // };
-
-    // final payload = jsonEncode(<String, dynamic>{
-    //   'api_key': 'OAyg2PFssTRePEQ6qZh5PQ',
-    //   'url': _urlController.text,
-    //   'score': _scoreController.text,
-    // });
-
     print(_urlController.text);
     print(_scoreController.text);
 
@@ -164,30 +157,29 @@ class _GamePageState extends State<GamePage> {
           setState(() {
             _responseText = jsonResponse['message'];
             print(_responseText);
-            // _isResponseDialogVisible = true;
           });
         }
       } else {
         setState(() {
           _responseText = "Something went wrong";
           print(_responseText);
-          // _isResponseDialogVisible = true;
         });
       }
     } catch (error) {
       setState(() {
         _responseText = error.toString();
         print(_responseText);
-        // _isResponseDialogVisible = true;
       });
     } finally {
       setState(() {
         _isLoading = false;
         _isResponseDialogVisible = true;
-        _loadInterstitialAd();
         _adCounter++;
-        if (_rewardedAdEnabled()) {
-          _loadRewardedAd();
+        
+        _showInterstitialAd();
+
+        if (_adCounter % 2 == 0) {
+          _showRewardedAd();
         }
       });
       dialogBuilder(
@@ -196,20 +188,13 @@ class _GamePageState extends State<GamePage> {
         onPressed: () {
           setState(() {
             _isResponseDialogVisible = false;
-            if (_interstitialAd != null) {
-                _interstitialAd?.show();
-            } 
-            if (_rewardedAd != null) {
-              if (_adCounter % 2 == 0) {
-                _adCounter = 0;
-                _rewardedAd?.show(
-                  onUserEarnedReward: (_, reward) {
-                    print('You have $reward free candy');
-                  },
-                );
-              }
-            }
           });
+
+          _showInterstitialAd();
+
+          if (_adCounter % 2 == 0) {
+            _showRewardedAd();
+          }
           Navigator.of(context).pop();
         },
       );
@@ -220,7 +205,7 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Telegram Game Hacker"),
+        title: const Text("Gamee Hack"),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
