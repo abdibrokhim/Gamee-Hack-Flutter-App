@@ -1,4 +1,4 @@
-package com.example.gamee_hacker_app
+package com.abdibrokhim.gamee_hack
 
 import io.flutter.embedding.android.FlutterActivity
 

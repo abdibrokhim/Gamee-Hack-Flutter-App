@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gamee_hacker_app">
+    package="com.abdibrokhim.gamee_hack">
    <application
         android:label="Gamee Hack"
         android:name="${applicationName}"

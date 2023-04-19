@@ -27,35 +27,34 @@ class _GamePageState extends State<GamePage> {
   BannerAd? _bannerAd;
   InterstitialAd? _interstitialAd;
   RewardedAd? _rewardedAd;
+  AppOpenAd? _appOpenAd;
 
 
   @override
   void initState() {
     super.initState();
 
-    //load ad here...
-    _loadInterstitialAd();
-    _loadRewardedAd();
-    _loadBannerAd();
+    _loadAppOpenAd();
   }
 
-  void _loadBannerAd() {
-    BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
+  void _loadAppOpenAd() {
+    AppOpenAd.load(
+      adUnitId: AdHelper.appOpenAdUnitId,
       request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
+      adLoadCallback: AppOpenAdLoadCallback(
         onAdLoaded: (ad) {
           setState(() {
-            _bannerAd = ad as BannerAd;
+            _appOpenAd = ad;
+            
+            _appOpenAd?.show();
           });
         },
-        onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
-          ad.dispose();
+        onAdFailedToLoad: (err) {
+          debugPrint('Failed to load an app open ad: ${err.message}');
         },
       ),
-    ).load();
+      orientation: AppOpenAd.orientationPortrait,
+    );
   }
 
   void _loadInterstitialAd() {
@@ -64,16 +63,16 @@ class _GamePageState extends State<GamePage> {
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {},
-          );
 
           setState(() {
             _interstitialAd = ad;
+            
+            _interstitialAd?.show();
+
           });
         },
         onAdFailedToLoad: (err) {
-          print('Failed to load an interstitial ad: ${err.message}');
+          debugPrint('Failed to load an interstitial ad: ${err.message}');
         },
       ),
     );
@@ -85,51 +84,32 @@ class _GamePageState extends State<GamePage> {
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              // setState(() {
-              //   ad.dispose();
-              //   _rewardedAd = null;
-                
-              // });
-            },
-          );
 
           setState(() {
             _rewardedAd = ad;
+
+            _rewardedAd?.show(
+              onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem){
+                num amount = rewardItem.amount;
+                debugPrint('Reward amount: $amount');
+              }
+            );
           });
         },
         onAdFailedToLoad: (err) {
-          print('Failed to load a rewarded ad: ${err.message}');
+          debugPrint('Failed to load a rewarded ad: ${err.message}');
         },
       ),
     );
   }
 
-  void _showInterstitialAd(){
-    _interstitialAd?.show();
-  }
-
-  void _showRewardedAd(){
-    _rewardedAd?.show(
-      onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem){
-        num amount = rewardItem.amount;
-        print('Reward amount: $amount');
-      }
-    );
-  }
-
-
   @override
   void dispose() {
-    _bannerAd?.dispose();
     _interstitialAd?.dispose();
     _rewardedAd?.dispose();
-
     super.dispose();
   }
 
-  
   Future<void> _submitScore() async {
     setState(() {
       _isLoading = true;
@@ -176,10 +156,10 @@ class _GamePageState extends State<GamePage> {
         _isResponseDialogVisible = true;
         _adCounter++;
         
-        _showInterstitialAd();
+        _loadInterstitialAd();
 
         if (_adCounter % 2 == 0) {
-          _showRewardedAd();
+          _loadRewardedAd();
         }
       });
       dialogBuilder(
@@ -190,10 +170,10 @@ class _GamePageState extends State<GamePage> {
             _isResponseDialogVisible = false;
           });
 
-          _showInterstitialAd();
+          _loadInterstitialAd();
 
           if (_adCounter % 2 == 0) {
-            _showRewardedAd();
+            _loadRewardedAd();
           }
           Navigator.of(context).pop();
         },
