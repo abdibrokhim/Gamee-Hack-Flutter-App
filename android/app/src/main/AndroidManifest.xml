@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.abdibrokhim.gamee_hack">
+    package="com.abdibrokhim.gamee">
    <application
-        android:label="Gamee Hack"
+        android:label="Gamee"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

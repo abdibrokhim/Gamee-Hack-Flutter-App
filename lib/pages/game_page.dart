@@ -185,7 +185,7 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gamee Hack"),
+        title: const Text("Gamee"),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
@@ -200,7 +200,7 @@ class _GamePageState extends State<GamePage> {
                   children: [
                     GameTextField(
                       controller: _urlController,
-                      hintText: "Enter game url here",
+                      hintText: "Enter game url",
                       obscureText: false,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -212,7 +212,7 @@ class _GamePageState extends State<GamePage> {
                     const SizedBox(height: 16),
                     GameTextField(
                       controller: _scoreController,
-                      hintText: "Enter score here",
+                      hintText: "Enter score",
                       obscureText: false,
                       validator: (value) {
                         if (value!.isEmpty) {
